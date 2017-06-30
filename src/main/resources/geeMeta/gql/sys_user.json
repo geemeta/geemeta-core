@@ -1,0 +1,11 @@
+{
+  "sys_user": {
+    "@p": "1,10",
+    "loginName": "super_admin",
+    "name|sw": "超级",
+    "name|ew": "员",
+    "@fs": "id,loginName,name",
+    "@order": "loginName|+,name|-",
+    "@group": "dept"
+  }
+}

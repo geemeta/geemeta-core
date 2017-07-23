@@ -207,7 +207,7 @@ public class MetaManager {
             if (fm != null) {
                 //TODO 确认还有哪些字段属性需设置
 //                logger.debug("字段" + TABLE_NAME + "." + fm.getColumn().getName() + "长度：" + Integer.parseInt(CHARACTER_MAXIMUM_LENGTH));
-                fm.getColumn().setCharMaxlength(Integer.parseInt(CHARACTER_MAXIMUM_LENGTH));
+                fm.getColumn().setCharMaxLength(Integer.parseInt(CHARACTER_MAXIMUM_LENGTH));
                 fm.getColumn().setNullable("NO".equalsIgnoreCase(IS_NULLABLE) ? false : true);
                 fm.getColumn().setExtra(EXTRA);
 //                        fm.getColumn().setDefaultValue();

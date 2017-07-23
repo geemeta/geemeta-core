@@ -65,6 +65,8 @@ public class GeemetaCoreApplication implements CommandLineRunner, InitializingBe
         ////解析脚本：sql、业务规则
         //String path =applicationContext.getEnvironment().getProperty("geemeta.res.path").trim();
         String path = this.getClass().getClassLoader().getResource("//").getPath();
+        //由测试类启动时，修改资源目录为源码下的资源目录
+        path=path.replace("test-classes","classes");
         //--sql
         TemplateManagerFactory.get(Dao.SQL_TEMPLATE_MANAGER).loadFiles(path + "/geeMeta/sql/");
         //--业务规则

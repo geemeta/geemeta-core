@@ -6,9 +6,11 @@ import com.geemeta.core.entity.EntityManager;
 import com.geemeta.core.entity.IdEntity;
 import com.geemeta.core.gql.GqlManager;
 import com.geemeta.core.gql.MetaManager;
+import com.geemeta.core.gql.execute.BoundPageSql;
 import com.geemeta.core.gql.execute.BoundSql;
 import com.geemeta.core.gql.meta.EntityMeta;
 import com.geemeta.core.gql.parser.FilterGroup;
+import com.geemeta.core.gql.parser.QueryCommand;
 import com.geemeta.core.gql.parser.SaveCommand;
 import com.geemeta.core.mvc.Ctx;
 import com.geemeta.core.template.TemplateManager;
@@ -113,9 +115,18 @@ public class Dao {
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParams(), requiredType);
     }
 
-    public List<Map<String, Object>> queryForMapList(String gql) {
-        BoundSql boundSql = gqlManager.generateQuerySql(gql, getSessionCtx());
-        return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParams());
+    public PageApiResult queryForMapList(String gql) {
+        BoundPageSql boundPageSql = gqlManager.generatePageQuerySql(gql, getSessionCtx());
+        QueryCommand command = (QueryCommand) boundPageSql.getBoundSql().getCommand();
+        List list = jdbcTemplate.queryForList(boundPageSql.getBoundSql().getSql(), boundPageSql.getBoundSql().getParams());
+        PageApiResult result = new PageApiResult();
+        result.setData(list);
+        result.setTotal(jdbcTemplate.queryForObject(boundPageSql.getCountSql(), boundPageSql.getBoundSql().getParams(), Long.class));
+        result.setPage(command.getPageNum());
+        result.setSize(command.getPageSize());
+        result.setDataSize(list != null ? list.size() : 0);
+        result.setMeta(metaManager.getByEntityName(command.getEntityName()).getSimpleFieldMetas(command.getFields()));
+        return result;
     }
 
     public <T> List<T> queryForOneColumnList(String gql, Class<T> elementType) throws DataAccessException {

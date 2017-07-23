@@ -39,6 +39,7 @@ public class JsonTextQueryParser {
     }
 
     public QueryCommand parse(String queryJsonText) {
+//        Assert.hasText(queryJsonText,"");
         JSONObject jo = JSON.parseObject(queryJsonText);
         CommandValidator validator = new CommandValidator();
         if (jo.size() != 1) {
@@ -98,13 +99,20 @@ public class JsonTextQueryParser {
                     case KW_PAGE:
                         command.setQueryForList(true);
                         String[] page = jo.getString(KW_PAGE).split("[ ]*,[ ]*");
-                        if (page.length != 2) {
+                        boolean isSuccess = true;
+                        if (page.length == 2 && org.apache.commons.lang3.StringUtils.isNumeric(page[0]) && org.apache.commons.lang3.StringUtils.isNumeric(page[1])) {
+                            command.setPageNum(Integer.parseInt(page[0]));
+                            command.setPageSize(Integer.parseInt(page[1]));
+                            if (command.getPageNum() <= 0 || command.getPageSize() <= 0) {
+                                isSuccess = false;
+                            }
+                        } else {
+                            isSuccess = false;
+                        }
+                        if (!isSuccess) {
                             validator.appendMessage("[");
                             validator.appendMessage(KW_PAGE);
-                            validator.appendMessage("]格式有误,正确格式如：1,10；");
-                        } else {
-                            command.setPage(Integer.parseInt(page[0]));
-                            command.setSize(Integer.parseInt(page[1]));
+                            validator.appendMessage("]格式有误，正确格式为“第几页，每页记录数”，从第1页开始，如：1,10；");
                         }
                         break;
                     default:
@@ -120,55 +128,59 @@ public class JsonTextQueryParser {
                 //where子句过滤条件
                 String[] ary = key.split(FILTER_FLAG);
                 String field = ary[0];
-                validator.validateField(field, "where");
-                if (ary.length == 1) {
-                    //等值
-                    fg.addFilter(field, FilterGroup.Operator.eq, jo.getString(key));
-                } else if (ary.length == 2) {
-                    //大于、小于...
-                    String fn = ary[1];
-                    FilterGroup.Operator operator = null;
-                    switch (fn) {
-                        case "eq":
-                            operator = FilterGroup.Operator.eq;
-                            break;
-                        case "neq":
-                            operator = FilterGroup.Operator.neq;
-                            break;
-                        case "lt":
-                            operator = FilterGroup.Operator.lt;
-                            break;
-                        case "lte":
-                            operator = FilterGroup.Operator.lte;
-                            break;
-                        case "gt":
-                            operator = FilterGroup.Operator.gt;
-                            break;
-                        case "sw":
-                            operator = FilterGroup.Operator.startWith;
-                            break;
-                        case "ew":
-                            operator = FilterGroup.Operator.endWith;
-                            break;
-                        case "c":
-                            operator = FilterGroup.Operator.contains;
-                            break;
+                //TODO
+//                if(!"draw".equals(field)){
+                    validator.validateField(field, "where");
+                    if (ary.length == 1) {
+                        //等值
+                        fg.addFilter(field, FilterGroup.Operator.eq, jo.getString(key));
+                    } else if (ary.length == 2) {
+                        //大于、小于...
+                        String fn = ary[1];
+                        FilterGroup.Operator operator = null;
+                        switch (fn) {
+                            case "eq":
+                                operator = FilterGroup.Operator.eq;
+                                break;
+                            case "neq":
+                                operator = FilterGroup.Operator.neq;
+                                break;
+                            case "lt":
+                                operator = FilterGroup.Operator.lt;
+                                break;
+                            case "lte":
+                                operator = FilterGroup.Operator.lte;
+                                break;
+                            case "gt":
+                                operator = FilterGroup.Operator.gt;
+                                break;
+                            case "sw":
+                                operator = FilterGroup.Operator.startWith;
+                                break;
+                            case "ew":
+                                operator = FilterGroup.Operator.endWith;
+                                break;
+                            case "c":
+                                operator = FilterGroup.Operator.contains;
+                                break;
 //                        case "in":
 //                            //TODO 暂不支持
 //                            break;
-                        default:
-                            validator.appendMessage("[");
-                            validator.appendMessage(key);
-                            validator.appendMessage("]");
-                            validator.appendMessage("不支持");
-                            validator.appendMessage(fn);
-                            validator.appendMessage(";");
+                            default:
+                                validator.appendMessage("[");
+                                validator.appendMessage(key);
+                                validator.appendMessage("]");
+                                validator.appendMessage("不支持");
+                                validator.appendMessage(fn);
+                                validator.appendMessage(";");
+                        }
+                        fg.addFilter(field, operator, jo.getString(key));
+                    } else {
+                        //TODO 格式不对 throw
                     }
-                    fg.addFilter(field, operator, jo.getString(key));
-                } else {
-                    //TODO 格式不对 throw
                 }
-            }
+
+//            }
         });
 
         Assert.isTrue(validator.isSuccess(), validator.getMessage());

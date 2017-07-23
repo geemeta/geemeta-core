@@ -48,7 +48,7 @@ public class ColumnMeta extends BaseEntity implements Serializable{
     private boolean unique;
 
     //CHARACTER_MAXIMUM_LENGTH
-    private int charMaxlength = 64;//默认长度
+    private int charMaxLength = 64;//默认长度
     //NUMERIC_PRECISION
     private int numericPrecision = 19; //默认长度
     //NUMERIC_SCALE
@@ -248,12 +248,12 @@ public class ColumnMeta extends BaseEntity implements Serializable{
 
     @Col(name = "character_maxinum_length")
     @Title(title = "长度")
-    public int getCharMaxlength() {
-        return charMaxlength;
+    public int getCharMaxLength() {
+        return charMaxLength;
     }
 
-    public void setCharMaxlength(int charMaxlength) {
-        this.charMaxlength = charMaxlength;
+    public void setCharMaxLength(int charMaxLength) {
+        this.charMaxLength = charMaxLength;
     }
 
     @Col(name = "numeric_precision")
@@ -357,7 +357,7 @@ public class ColumnMeta extends BaseEntity implements Serializable{
                 t = dataType + "(" + (numericPrecision + 1) + ") unsigned";
             }
         else if ("varchar".indexOf(dataType) != -1) {
-            t = dataType + "(" + charMaxlength + ")";
+            t = dataType + "(" + charMaxLength + ")";
         } else if ("decimal".indexOf(dataType) != -1) {
             t = dataType + "(" + numericPrecision + "," + numericScale + ")";
         } else if ("datetime".indexOf(dataType) != -1) {

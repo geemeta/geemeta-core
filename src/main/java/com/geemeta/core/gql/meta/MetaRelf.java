@@ -210,7 +210,7 @@ public class MetaRelf {
                                 cfm.getColumn().setName(column.name());
                                 cfm.getColumn().setNumericPrecision(column.numericPrecision());
                                 cfm.getColumn().setNumericScale(column.numericScale());
-                                cfm.getColumn().setCharMaxlength(column.charMaxlength());
+                                cfm.getColumn().setCharMaxLength(column.charMaxlength());
                                 cfm.getColumn().setDataType(column.dataType());
                                 try {
                                     Object defaultValue = method.invoke(bean);

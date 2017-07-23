@@ -22,6 +22,8 @@ public class EntityMeta {
     private Map<String, DictDataSource> dictDataSourceMap;
     //冗余，用于快速获取列信息
     private Map<String, FieldMeta> fieldMetaMap;
+    //冗余，用于快速获取列元数据，json格式，用于对外展示，过滤掉了一些数据库字段
+    private Map<String, SimpleFieldMeta> fieldMetaForViewMap;
     //不更新的字段
     private Map<String, Boolean> ignoreUpdateFieldMap;
 
@@ -98,7 +100,23 @@ public class EntityMeta {
             if (fieldMetaMap == null) fieldMetaMap = new HashMap<>(fieldMetas.size());
             fieldMetaMap.put(fm.getFieldName(), fm);
             this.fieldNames[i++] = fm.getFieldName();
+
+            if (fieldMetaForViewMap == null) fieldMetaForViewMap = new HashMap<>(fieldMetas.size());
+            fieldMetaForViewMap.put(fm.getFieldName(), getSimpleFiledMeta(fm));
         }
+    }
+
+    private SimpleFieldMeta getSimpleFiledMeta(FieldMeta fm) {
+        SimpleFieldMeta meta = new SimpleFieldMeta();
+        meta.setName(fm.getFieldName());
+        meta.setType(fm.getFieldType().getSimpleName());
+        meta.setTitle(fm.getColumn().getTitle());
+        meta.setComment(fm.getColumn().getComment());
+        meta.setNullable(fm.getColumn().isNullable());
+        meta.setCharMaxLength(fm.getColumn().getCharMaxLength());
+        meta.setPrecision(fm.getColumn().getNumericPrecision());
+        meta.setScale(fm.getColumn().getNumericScale());
+        return meta;
     }
 
     public Map<String, DictDataSource> getDictDataSourceMap() {
@@ -121,6 +139,27 @@ public class EntityMeta {
 
     public FieldMeta getFieldMeta(String fieldName) {
         return fieldMetaMap.get(fieldName);
+    }
+
+    public FieldMeta[] getFieldMetas(String[] fieldNames) {
+        FieldMeta[] fieldMetas = new FieldMeta[fieldNames.length];
+        for (int i = 0; i < fieldNames.length; i++) {
+            fieldMetas[i] = fieldMetaMap.get(fieldNames[i]);
+        }
+        return fieldMetas;
+    }
+
+    /**
+     * 过滤掉数据库表名等信息，用于对外发布元数据服务的字段信息
+     * @param fieldNames
+     * @return
+     */
+    public SimpleFieldMeta[] getSimpleFieldMetas(String[] fieldNames) {
+        SimpleFieldMeta[] metas = new SimpleFieldMeta[fieldNames.length];
+        for (int i = 0; i < fieldNames.length; i++) {
+            metas[i] = fieldMetaForViewMap.get(fieldNames[i]);
+        }
+        return metas;
     }
 
     public boolean containsField(String fieldName) {

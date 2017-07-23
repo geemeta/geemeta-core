@@ -1,5 +1,6 @@
 package com.geemeta.core.gql;
 
+import com.geemeta.core.gql.execute.BoundPageSql;
 import com.geemeta.core.gql.execute.BoundSql;
 import com.geemeta.core.gql.meta.EntityMeta;
 import com.geemeta.core.gql.parser.*;
@@ -39,24 +40,34 @@ public class GqlManager {
     }
 
 
-
     //========================================================
     //                  基于元数据  gql                      ==
     //========================================================
-    public BoundSql generateQuerySql(String jsonText,Ctx ctx) {
+    public BoundSql generateQuerySql(String jsonText, Ctx ctx) {
         return metaQuerySqlProvider.generate(jsonTextQueryParser.parse(jsonText));
     }
-    public BoundSql generateSaveSql(String jsonText,Ctx ctx){
-        SaveCommand command = jsonTextSaveParser.parse(jsonText,ctx);
-        if(command.getCommandType()==CommandType.Update){
+
+    public BoundPageSql generatePageQuerySql(String jsonText, Ctx ctx) {
+        QueryCommand command = jsonTextQueryParser.parse(jsonText);
+        BoundPageSql boundPageSql = new BoundPageSql();
+        boundPageSql.setBoundSql(metaQuerySqlProvider.generate(command));
+        boundPageSql.setCountSql(metaQuerySqlProvider.buildCountSql(command));
+        return boundPageSql;
+    }
+
+    public BoundSql generateSaveSql(String jsonText, Ctx ctx) {
+        SaveCommand command = jsonTextSaveParser.parse(jsonText, ctx);
+        if (command.getCommandType() == CommandType.Update) {
             return metaUpdateSqlProvider.generate(command);
-        }else{
+        } else {
             return metaInsertSqlProvider.generate(command);
         }
     }
-    public BoundSql generateDeleteSql(String jsonText,Ctx ctx){
-        return metaDeleteSqlProvider.generate(jsonTextSaveParser.parse(jsonText,ctx));
+
+    public BoundSql generateDeleteSql(String jsonText, Ctx ctx) {
+        return metaDeleteSqlProvider.generate(jsonTextSaveParser.parse(jsonText, ctx));
     }
+
     //========================================================
     //                  基于元数据  entity                   ==
     //========================================================
@@ -67,6 +78,7 @@ public class GqlManager {
     public <T> BoundSql generateQueryForListSql(Class<T> clazz, FilterGroup filterGroup) {
         return generateQuerySql(clazz, true, filterGroup);
     }
+
     private <T> BoundSql generateQuerySql(Class<T> clazz, boolean isArray, FilterGroup filterGroup) {
         QueryCommand queryCommand = new QueryCommand();
         EntityMeta em = metaManager.get(clazz);

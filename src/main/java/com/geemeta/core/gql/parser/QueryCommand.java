@@ -3,27 +3,31 @@ package com.geemeta.core.gql.parser;
 /**
  * @author itechgee@126.com
  */
-public class QueryCommand extends BaseCommand<QueryCommand>{
+public class QueryCommand extends BaseCommand<QueryCommand> {
     /**
      * TODO 客户端生成的唯一标识，用于缓存
      */
     private String key;
     private boolean queryForList = false;
     /**
-     * @param pageNum 开始记录数 =page(客户端请求参数中)=offset(in mysql)，第一条记录从1开始，而不是从0开始
+     * @param pageNum，第几页，从1开始。
      */
-    private int page = -1;
+    private int pageNum = -1;
     /**
-     * @param pageSize 每页记录数 =pageSize(客户端请求参数中)=limit(in mysql)
+     * @param pageSize 每页记录数，pageSize(客户端请求参数中)=limit(in mysql)
      */
-    private int size = -1;
+    private int pageSize = -1;
 
     private String groupBy;
     private String orderBy;
     private FilterGroup having;
 
-    public QueryCommand(){
+    public QueryCommand() {
         setCommandType(CommandType.Query);
+    }
+
+    public boolean isPagingQuery() {
+        return pageNum > 0 && pageSize > 0;
     }
 
     public String getKey() {
@@ -35,7 +39,7 @@ public class QueryCommand extends BaseCommand<QueryCommand>{
     }
 
     /**
-     * 默认值为false
+     * 是查询单条记录还是多条记录，默认值为false，即查询单条记录
      */
     public boolean isQueryForList() {
         return queryForList;
@@ -45,20 +49,20 @@ public class QueryCommand extends BaseCommand<QueryCommand>{
         this.queryForList = queryForList;
     }
 
-    public int getPage() {
-        return page;
+    public int getPageNum() {
+        return pageNum;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
     }
 
-    public int getSize() {
-        return size;
+    public int getPageSize() {
+        return pageSize;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
 

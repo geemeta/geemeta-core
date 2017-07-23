@@ -74,8 +74,6 @@ public class CommandValidator {
         this.message.append(message);
     }
 
-
-
     public String getPK(){
         return  entityMeta.getId().getFieldName();
     }

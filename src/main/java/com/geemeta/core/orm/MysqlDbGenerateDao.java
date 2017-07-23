@@ -63,7 +63,7 @@ public class MysqlDbGenerateDao {
                 try {
                     if (defaultColumnLengthMap.containsKey(fm.getColumnName())) {
                         int len = defaultColumnLengthMap.get(fm.getColumnName()).intValue();
-                        fm.getColumn().setCharMaxlength(len);
+                        fm.getColumn().setCharMaxLength(len);
                         fm.getColumn().setNumericPrecision(len);
                         fm.getColumn().afterSet();
                     }

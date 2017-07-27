@@ -13,8 +13,8 @@ import com.geemeta.core.gql.parser.FilterGroup;
 import com.geemeta.core.gql.parser.QueryCommand;
 import com.geemeta.core.gql.parser.SaveCommand;
 import com.geemeta.core.mvc.Ctx;
-import com.geemeta.core.template.TemplateManager;
-import com.geemeta.core.template.TemplateManagerFactory;
+import com.geemeta.core.template.SQLTemplateManager;
+import com.geemeta.core.template.SQLTemplateManagerFactory;
 import com.geemeta.m.platform.security.SecurityHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class Dao {
     private static Map<String, Object> defaultParams = new HashMap<>();
     public final static String SQL_TEMPLATE_MANAGER = "sql";
     private MetaManager metaManager = MetaManager.singleInstance();
-    private TemplateManager templateManager = TemplateManagerFactory.get(SQL_TEMPLATE_MANAGER);
+    private SQLTemplateManager sqlTemplateManager = SQLTemplateManagerFactory.get(SQL_TEMPLATE_MANAGER);
     private GqlManager gqlManager = GqlManager.singleInstance();
     private EntityManager entityManager = EntityManager.singleInstance();
     private static HashMap<String, String> ignoreFieldsMap = new HashMap<String, String>(1);
@@ -65,27 +65,27 @@ public class Dao {
     //                  基于sqlId                           ==
     //========================================================
     public void execute(String sqlId, Map<String, Object> paramMap) {
-        jdbcTemplate.execute((String) templateManager.generate(sqlId, paramMap));
+        jdbcTemplate.execute((String) sqlTemplateManager.generate(sqlId, paramMap));
     }
 
     public Map<String, Object> queryForMap(String sqlId, Map<String, Object> paramMap) throws DataAccessException {
-        return jdbcTemplate.queryForMap(templateManager.generate(sqlId, paramMix(paramMap)));
+        return jdbcTemplate.queryForMap(sqlTemplateManager.generate(sqlId, paramMix(paramMap)));
     }
 
     public <T> T queryForObject(String sqlId, Map<String, Object> paramMap, Class<T> requiredType) throws DataAccessException {
-        return jdbcTemplate.queryForObject(templateManager.generate(sqlId, paramMix(paramMap)), requiredType);
+        return jdbcTemplate.queryForObject(sqlTemplateManager.generate(sqlId, paramMix(paramMap)), requiredType);
     }
 
     public List<Map<String, Object>> queryForMapList(String sqlId, Map<String, Object> paramMap) {
-        return jdbcTemplate.queryForList(templateManager.generate(sqlId, paramMix(paramMap)));
+        return jdbcTemplate.queryForList(sqlTemplateManager.generate(sqlId, paramMix(paramMap)));
     }
 
     public <T> List<T> queryForOneColumnList(String sqlId, Map<String, Object> paramMap, Class<T> elementType) throws DataAccessException {
-        return jdbcTemplate.queryForList(templateManager.generate(sqlId, paramMix(paramMap)), elementType);
+        return jdbcTemplate.queryForList(sqlTemplateManager.generate(sqlId, paramMix(paramMap)), elementType);
     }
 
     public int save(String sqlId, Map<String, Object> paramMap) {
-        return jdbcTemplate.update((String) templateManager.generate(sqlId, paramMix(paramMap)));
+        return jdbcTemplate.update((String) sqlTemplateManager.generate(sqlId, paramMix(paramMap)));
     }
 
     /**
@@ -164,6 +164,8 @@ public class Dao {
     public <T> T queryForObject(Class<T> entityType, String fieldName, Object value) {
         FilterGroup filterGroup = new FilterGroup().addFilter(fieldName, value.toString());
         BoundSql boundSql = gqlManager.generateQueryForObjectOrMapSql(entityType, filterGroup);
+        if (logger.isDebugEnabled())
+            logger.debug("{}", boundSql);
         return jdbcTemplate.queryForObject(boundSql.getSql(), boundSql.getParams(), new CommonRowMapper<T>());
     }
 

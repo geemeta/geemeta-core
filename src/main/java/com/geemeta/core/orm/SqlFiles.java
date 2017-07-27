@@ -5,10 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,7 +18,7 @@ public class SqlFiles {
     private static Logger logger = LoggerFactory.getLogger(SqlFiles.class);
 
 
-    public static void loadAndExcute(List<String> lines, JdbcTemplate jdbcTemplate, boolean isWinOS) {
+    public static void loadAndExecute(String[] lines, JdbcTemplate jdbcTemplate, boolean isWinOS) {
         if (lines != null) {
             StringBuffer sb = new StringBuffer();
             for (String line : lines) {
@@ -60,15 +57,35 @@ public class SqlFiles {
     public static void loadAndExecute(InputStream is, JdbcTemplate jdbcTemplate, boolean isWinOS) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            List<String> lines = new ArrayList<String>();
+            List<String> lineList = new ArrayList<String>();
             String line = null;
             while ((line = reader.readLine()) != null) {
-                lines.add(line);
+                lineList.add(line);
+                logger.info("line:{}", line);
             }
-            loadAndExcute(lines, jdbcTemplate, isWinOS);
+//            String[] lines = new String[lineList.size()];
+            loadAndExecute(lineList, jdbcTemplate, isWinOS);
         } catch (IOException e) {
             logger.error("加载SQL流文件并执行出错！{}", e);
         }
+    }
+
+
+    public static void loadAndExecute(List<String> lineList, JdbcTemplate jdbcTemplate, boolean isWinOS) {
+        String[] lines = new String[lineList.size()];
+        lineList.toArray(lines);
+        loadAndExecute(lines, jdbcTemplate, isWinOS);
+    }
+
+    /**
+     * 文件格式说明：每条语句之间必须用注释“--”进行分割
+     *
+     * @param file         SQL文件
+     * @param jdbcTemplate
+     * @param isWinOS
+     */
+    public static void loadAndExecute(File file, JdbcTemplate jdbcTemplate, boolean isWinOS) {
+        loadAndExecute(file.list(), jdbcTemplate, isWinOS);
     }
 
     /**
@@ -82,7 +99,7 @@ public class SqlFiles {
         try {
             if (Files.isExecutable(Paths.get(path))) {
                 List<String> lines = Files.readAllLines(Paths.get(path));
-                loadAndExcute(lines, jdbcTemplate, isWinOS);
+                loadAndExecute(lines, jdbcTemplate, isWinOS);
             }
         } catch (IOException e) {
             logger.error("加载SQL文件并执行出错！\r\n文件：" + path + "\r\n", e);

@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 import javax.script.ScriptException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -24,11 +25,10 @@ import java.util.Map;
  * @author itechgee@126.com
  * @date 2017/5/30.
  */
-public class TemplateManager extends Manager {
-    private Logger logger = LoggerFactory.getLogger(TemplateManager.class);
+public class JSTemplateManager extends Manager {
+    private Logger logger = LoggerFactory.getLogger(JSTemplateManager.class);
 
     private JsTemplateParser jsTemplateParser = new JsTemplateParser();
-    private SqlTemplateParser sqlTemplateParser = new SqlTemplateParser();
     private JsProvider jsProvider = new JsProvider();
 
 
@@ -39,11 +39,11 @@ public class TemplateManager extends Manager {
      */
     @Override
     public void parseFile(File file) throws IOException {
-        if (file.getName().endsWith(".sql")) {
-            compileJs(sqlTemplateParser.parse(Files.readAllLines(Paths.get(file.getPath()))));
-        } else if (file.getName().endsWith(".js")) {
-            compileJs(jsTemplateParser.parse(Files.readAllLines(Paths.get(file.getPath()))));
-        }
+        compileJs(jsTemplateParser.parse(Files.readAllLines(Paths.get(file.getPath()))));
+    }
+
+    public void parseStream(InputStream is) throws IOException {
+        compileJs(jsTemplateParser.parse(readLines(is)));
     }
 
     private void compileJs(Map<String, String> jsFuncMap) {

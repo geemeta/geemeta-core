@@ -49,9 +49,12 @@ public class AuthRestController {
             boolean rememberMe = Boolean.parseBoolean(req.getParameter("remember"));
             token.setRememberMe(rememberMe);
             try {
+                if (logger.isDebugEnabled())
+                    logger.debug("User [" + token.getUsername() + "] logging ... ");
                 currentUser.login(token);
                 //if no exception, that's it, we're done!
-                logger.info("User [" + currentUser.getPrincipal() + "] logged in successfully.");
+                if (logger.isDebugEnabled())
+                    logger.debug("User [" + currentUser.getPrincipal() + "] logged in successfully.");
             } catch (UnknownAccountException uae) {
                 //username wasn't in the system, show them an error message?
                 throw new RestException(HttpStatus.BAD_REQUEST, "无效的用户名！");

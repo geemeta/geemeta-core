@@ -2,7 +2,6 @@ package com.geemeta.core.mvc;
 
 import com.geemeta.core.gql.execute.Page;
 import com.geemeta.core.orm.Dao;
-import com.sun.deploy.net.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ public class KeyController {
 
     @Autowired
     protected Dao dao;
-    public HashMap queryForList(HttpRequest request){
+    public HashMap queryForList(HttpServletRequest request){
 
 
         return null;

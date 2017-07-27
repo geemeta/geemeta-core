@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 @SpringBootApplication
-public class GeemetaCoreApplication implements CommandLineRunner, InitializingBean {
-    private static Logger logger = LoggerFactory.getLogger(GeemetaCoreApplication.class);
+public class MainApplication implements CommandLineRunner, InitializingBean {
+    private static Logger logger = LoggerFactory.getLogger(MainApplication.class);
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
@@ -136,7 +136,7 @@ public class GeemetaCoreApplication implements CommandLineRunner, InitializingBe
 
 
     public static void main(String[] args) {
-        SpringApplication.run(GeemetaCoreApplication.class, args);
+        SpringApplication.run(MainApplication.class, args);
     }
 
 

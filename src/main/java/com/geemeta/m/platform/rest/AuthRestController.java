@@ -5,7 +5,6 @@ import com.geemeta.m.platform.entity.CommonGeneralConfig;
 import com.geemeta.m.platform.entity.User;
 import com.geemeta.m.platform.entity.UserGeneralConfig;
 import com.geemeta.m.platform.security.SecurityHelper;
-import com.geemeta.m.platform.security.ShiroDbRealm;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
@@ -30,8 +29,8 @@ public class AuthRestController {
     @Autowired
     private Dao dao;
 
-    @Autowired
-    private ShiroDbRealm shiroDbRealm;
+//    @Autowired
+//    private ShiroDbRealm shiroDbRealm;
 
     private Logger logger = LoggerFactory.getLogger(AuthRestController.class);
 
@@ -50,11 +49,11 @@ public class AuthRestController {
             token.setRememberMe(rememberMe);
             try {
                 if (logger.isDebugEnabled())
-                    logger.debug("User [" + token.getUsername() + "] logging ... ");
+                    logger.debug("User [" + token.getUsername() + "] logging in ... ");
                 currentUser.login(token);
                 //if no exception, that's it, we're done!
                 if (logger.isDebugEnabled())
-                    logger.debug("User [" + currentUser.getPrincipal() + "] logged in successfully.");
+                    logger.debug("User [" + currentUser.getPrincipal() + "] login successfully.");
             } catch (UnknownAccountException uae) {
                 //username wasn't in the system, show them an error message?
                 throw new RestException(HttpStatus.BAD_REQUEST, "无效的用户名！");
@@ -70,9 +69,6 @@ public class AuthRestController {
             }
         }
         user = dao.queryForObject(User.class, "loginName", user.getLoginName());
-//        map.put("salt","");
-//        map.put("password","");
-//        map.put("plainPassword","");
         user.setSalt("");
         user.setPassword("");
         user.setPlainPassword("");
@@ -101,7 +97,7 @@ public class AuthRestController {
             String name = SecurityHelper.getCurrentUser().getName();
             Subject currentUser = SecurityUtils.getSubject();
             currentUser.logout();
-            logger.debug("User [" + name + "] logout in successfully.");
+            logger.debug("User [" + name + "] logout successfully.");
         }
     }
 

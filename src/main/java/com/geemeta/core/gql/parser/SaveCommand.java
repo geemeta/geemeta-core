@@ -9,6 +9,7 @@ import java.util.Map;
  */
 public class SaveCommand extends BaseCommand<SaveCommand> {
 
+    private String PK;
     private Map<String, Object> valueMap;
 
     /**
@@ -23,5 +24,11 @@ public class SaveCommand extends BaseCommand<SaveCommand> {
         this.valueMap = valueMap;
     }
 
+    public String getPK() {
+        return PK;
+    }
 
+    public void setPK(String PK) {
+        this.PK = PK;
+    }
 }

@@ -43,12 +43,12 @@ public class SqlTemplateLexer extends AbstractTemplateLexer {
 //                //当前是sql语句分行
 //                if (sqlId != null) {
 //                    //新的sql语句行，先保存已有的sqlToken
-//                    if (TemplateStatement != null && TemplateStatement.getContent() != null && TemplateStatement.getContent().size() > 0)
+//                    if (TemplateStatement != null && TemplateStatement.getTree() != null && TemplateStatement.getTree().size() > 0)
 //                        templateStatements.add(TemplateStatement);
 //                }
 //                sqlId = line.replace(SQL_OPEN_FLAG, "").replace("-", "").trim();
 //                TemplateStatement = new TemplateStatement();
-//                TemplateStatement.setContent(new ArrayList());
+//                TemplateStatement.setTree(new ArrayList());
 //                TemplateStatement.setId(sqlId);
 //            } else {
 //                //丢弃注解行，不进行add(line)
@@ -63,11 +63,11 @@ public class SqlTemplateLexer extends AbstractTemplateLexer {
 //                }
 //
 //                if (TemplateStatement != null)
-//                    TemplateStatement.getContent().add(line);
+//                    TemplateStatement.getTree().add(line);
 //            }
 //        }
 //        //添加最后一个
-//        if (TemplateStatement != null && TemplateStatement.getContent() != null && TemplateStatement.getContent().size() > 0)
+//        if (TemplateStatement != null && TemplateStatement.getTree() != null && TemplateStatement.getTree().size() > 0)
 //            templateStatements.add(TemplateStatement);
 //        return templateStatements;
 //    }

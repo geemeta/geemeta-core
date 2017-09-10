@@ -134,9 +134,17 @@ public class Dao {
         return jdbcTemplate.queryForList(boundSql.getSql(), boundSql.getParams(), elementType);
     }
 
-    public int save(String gql) {
+    /**
+     * 保存
+     *
+     * @param gql
+     * @return 主健值
+     */
+    public String save(String gql) {
         BoundSql boundSql = gqlManager.generateSaveSql(gql, getSessionCtx());
-        return jdbcTemplate.update(boundSql.getSql(), boundSql.getParams());
+        SaveCommand command = (SaveCommand) boundSql.getCommand();
+        int updateNum = jdbcTemplate.update(boundSql.getSql(), boundSql.getParams());
+        return command.getPK();
     }
 
     //========================================================

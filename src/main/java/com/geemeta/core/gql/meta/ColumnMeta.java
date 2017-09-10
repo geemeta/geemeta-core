@@ -207,7 +207,7 @@ public class ColumnMeta extends BaseEntity implements Serializable{
 
     @DictDataSrc(group = "DATA_TYPE")
     @Col(name = "data_type")
-    @Title(title = "数据类型", description = "int|bigint|varchar|datetime|date|time|timestamp")
+    @Title(title = "数据类型", description = "int|bigint|varchar|datetime|date|time|timestamp|text|longText")
     public String getDataType() {
         return dataType;
     }
@@ -341,6 +341,7 @@ public class ColumnMeta extends BaseEntity implements Serializable{
 
 
     /**
+     * TODO 改由TypeConvert提从转换
      * 应在所有属性都设置完成之后，依据当前的属性值生成,例如：
      * bigint(21) unsigned
      * varchar(64)

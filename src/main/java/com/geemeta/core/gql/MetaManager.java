@@ -80,6 +80,12 @@ public class MetaManager {
     public Map<String,Object> newDefaultEntity(Class clazz){
         return newDefaultEntity(get(clazz));
     }
+
+    /**
+     * 基于元数据，创建默认实体（Map），并以各字段的默认值填充
+     * @param em
+     * @return
+     */
     public Map<String,Object> newDefaultEntity(EntityMeta em){
         HashMap<String,Object> map = new HashMap(em.getFieldMetas().size());
         for(FieldMeta fm : em.getFieldMetas()){

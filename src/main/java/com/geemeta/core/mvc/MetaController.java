@@ -55,13 +55,15 @@ public class MetaController {
      * e.g.:http://localhost:8080/api/meta/list/
      *
      * @param request
-     * @return
+     * @return 主键值
      */
     @RequestMapping(value = {"save", "save/*"}, method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
     @ResponseBody
-    public int save(HttpServletRequest request) {
+    public SaveResult save(HttpServletRequest request) {
         String gql = getGql(request);
-        return dao.save(gql);
+        SaveResult saveResult = new SaveResult();
+        saveResult.setData(dao.save(gql));
+        return saveResult;
     }
 
     private String getGql(HttpServletRequest request) {

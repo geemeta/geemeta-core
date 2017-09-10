@@ -1,6 +1,6 @@
 package com.geemeta.core.mvc;
 
-import com.geemeta.core.entity.PageConfig;
+import com.geemeta.m.platform.entity.designer.PageConfig;
 import com.geemeta.core.orm.ApiResultCode;
 import com.geemeta.core.orm.Dao;
 import com.geemeta.core.orm.ApiResult;

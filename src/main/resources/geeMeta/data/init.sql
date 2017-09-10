@@ -34,7 +34,7 @@ VALUES
 
 -- 初始化字典信息
 -- INSERT INTO `md_data_item`
--- (creator,update_at,code,inbuilt,description,type,updater,group_name,name,md_data_item_catalog_id,group_code,create_at,data_status)
+-- (creator,update_at,name,inbuilt,description,type,updater,group_code,name,md_data_item_catalog_id,group_code,create_at,data_status)
 -- VALUES
 --   (1,NOW(), 'string', 1, '', 'string', 1, '数据类型', '字符串(string)', 1, 'DATA_TYPE', NOW(),0),
 --   (1,NOW(), 'number', 1, '', 'string', 1, '数据类型', '数值(number)', 1, 'DATA_TYPE', NOW(),0),

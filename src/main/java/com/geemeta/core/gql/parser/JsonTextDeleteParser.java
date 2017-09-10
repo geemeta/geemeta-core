@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * @author itechgee
- *         解析json字符串，并返回参数map
+ * 解析json字符串，并返回参数map
  */
 public class JsonTextDeleteParser {
 
@@ -73,44 +73,18 @@ public class JsonTextDeleteParser {
         } else if (ary.length == 2) {
             //大于、小于...
             String fn = ary[1];
-            FilterGroup.Operator operator = null;
-            switch (fn) {
-                case "eq":
-                    operator = FilterGroup.Operator.eq;
-                    break;
-                case "neq":
-                    operator = FilterGroup.Operator.neq;
-                    break;
-                case "lt":
-                    operator = FilterGroup.Operator.lt;
-                    break;
-                case "lte":
-                    operator = FilterGroup.Operator.lte;
-                    break;
-                case "gt":
-                    operator = FilterGroup.Operator.gt;
-                    break;
-                case "sw":
-                    operator = FilterGroup.Operator.startWith;
-                    break;
-                case "ew":
-                    operator = FilterGroup.Operator.endWith;
-                    break;
-                case "c":
-                    operator = FilterGroup.Operator.contains;
-                    break;
-//                        case "in":
-//                            //TODO 暂不支持
-//                            break;
-                default:
-                    validator.appendMessage("[");
-                    validator.appendMessage(key);
-                    validator.appendMessage("]");
-                    validator.appendMessage("不支持");
-                    validator.appendMessage(fn);
-                    validator.appendMessage(";");
+            if (!FilterGroup.Operator.contains(fn)) {
+                validator.appendMessage("[");
+                validator.appendMessage(key);
+                validator.appendMessage("]");
+                validator.appendMessage("不支持");
+                validator.appendMessage(fn);
+                validator.appendMessage(";只支持");
+                validator.appendMessage(FilterGroup.Operator.getOperatorStrings());
+            } else {
+                FilterGroup.Operator operator = FilterGroup.Operator.fromString(fn);
+                fg.addFilter(field, operator, jo.getString(key));
             }
-            fg.addFilter(field, operator, jo.getString(key));
         } else {
             //TODO 格式不对 throw
         }

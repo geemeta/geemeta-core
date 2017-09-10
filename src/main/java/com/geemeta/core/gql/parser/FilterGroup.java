@@ -179,12 +179,27 @@ public class FilterGroup {
 
         // Implementing a fromString method on an enum type
         private static final Map<String, Operator> stringToEnum = new HashMap<String, Operator>();
+        private static String operatorStrings = null;
 
         static {
-            // Initialize map from constant name to enum constant
+            StringBuilder sb = new StringBuilder();
             for (Operator operator : values()) {
                 stringToEnum.put(operator.toString(), operator);
+                sb.append(operator.toString());
+                sb.append(",");
             }
+            if (sb.length() > 0) {
+                sb.setLength(sb.length() - 1);
+            }
+            operatorStrings = sb.toString();
+        }
+
+        public static boolean contains(String symbol) {
+            return stringToEnum.containsKey(symbol);
+        }
+
+        public static String getOperatorStrings() {
+            return operatorStrings;
         }
 
         public static Operator fromString(String symbol) {
